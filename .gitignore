@@ -1,3 +1,5 @@
 .env
 node_modules
+nohup.out
 yarn.lock
+yarn-error.log
