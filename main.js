@@ -1,7 +1,9 @@
 require("dotenv").config();
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const Ytdl = require("ytdl-core");
 const prefix = "!";
+let channel = false;
 client.login(process.env.TOKEN);
 
 client.on("ready", () => {
@@ -11,39 +13,58 @@ client.on("ready", () => {
 client.on("message", async (msg) => {
   const args = msg.content.slice(prefix.length).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
-  console.log(msg);
   if (msg.content === "191") {
-    msg.reply("Olá, você ligou para polícia federal qual seria a denúncia?");
-  }
-
-  if (command === "denuncia") {
+    msg.channel.send(
+      "Olá, você ligou para polícia federal qual seria a denúncia?"
+    );
+  } else if (command === "denuncia") {
     if (!args.length) {
-      msg.reply("Por favor informar qual é a denúncia!");
+      msg.channel.send("Por favor informar qual é a denúncia!");
     } else {
-      msg.reply("Estamos mandando as viaturas já!");
-      msg.reply("https://static.poder360.com.br/2019/08/giphy-2.gif");
+      msg.channel.send("Estamos mandando as viaturas já!");
+      msg.channel.send("https://static.poder360.com.br/2019/08/giphy-2.gif");
     }
-  }
-  if (command === "espiao") {
+  } else if (command === "espiao") {
     if (
       msg.author.id == 294995244108218369 ||
       msg.author.id == 112597168816201728
     ) {
-      if (msg.member.voice.channel) {
-        const connect = await msg.member.voice.channel.join();
-        msg.reply("Entrando.");
+      if (msg.member.voiceChannel) {
+        const connect = await msg.member.voiceChannel.join();
+        msg.channel.send("Entrando.");
+        channel = true;
       } else {
-        msg.reply("Você tem que entrar em um voice!");
+        msg.channel.send("Você tem que entrar em um voice!");
       }
     } else {
-      msg.reply(`Você não é um privilégiado!`);
+      msg.channel.send(`Você não é um privilégiado!`);
     }
-  }
-  if (command === "ajuda" || command === "help") {
-    msg.reply(`
-      191 - Ligar pra mim ${client.user.username}.
-      !denuncia - Fazer sua denúncia.
-      !espiao - Colocar um espião no porão(Apenas alguns mods e o j4g3#2757).
+  } else if (command === "ajuda" || command === "help") {
+    msg.channel.send(`
+
+    191 - Ligar pra mim ${client.user.username}.
+    !denuncia - Fazer sua denúncia.
+    !espiao - Colocar um espião no porão(Apenas alguns mods e o j4g3#2757).
+    !play - Para tocar música apenas links do youtube.
+    !sair - Se você não sabe o'que isso faz vou-te prender.
+    
     `);
+  }
+  if (msg.content.startsWith("!play")) {
+    if (channel) {
+      let Music = msg.content.replace("!play ", "");
+      if (Ytdl.validateURL(Music)) {
+        msg.member.voiceChannel.connection.playStream(Ytdl(Music));
+        msg.reply("Tocando.");
+      } else {
+        msg.reply("Este link não é do youtube.");
+      }
+    }
+  } else if (command === "sair") {
+    if (msg.member.voiceChannel) {
+      await msg.member.voiceChannel.leave();
+      channel = false;
+      console.log("ok");
+    }
   }
 });

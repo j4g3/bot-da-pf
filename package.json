@@ -8,8 +8,12 @@
     "dev": "nodemon main.js"
   },
   "dependencies": {
-    "discord.js": "^12.2.0",
-    "dotenv": "^8.2.0"
+    "discord.js": "11.5.1",
+    "dotenv": "^8.2.0",
+    "ffmpeg": "^0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
+    "node-opus": "^0.3.3",
+    "ytdl-core": "^2.1.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
